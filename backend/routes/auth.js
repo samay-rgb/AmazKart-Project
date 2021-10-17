@@ -52,22 +52,28 @@ router.post("/login", async (req, res) => {
         } else {
           //const rpass = result[0].password;
           // console.log(rpass);
-          const passwordCompare = await bcrypt.compare(
-            password,
-            result[0].password
-          );
-          if (!passwordCompare) {
-            return res.status(400).json({ error: "Wrong password" });
-          }
+          if (result.length === 0) {
+            return res
+              .status(400)
+              .json({ error: "Wrong email id or password" });
+          } else {
+            const passwordCompare = await bcrypt.compare(
+              password,
+              result[0].password
+            );
+            if (!passwordCompare) {
+              return res.status(400).json({ error: "Wrong password" });
+            }
 
-          const data = {
-            user: {
-              id: result[0].email,
-            },
-          };
-          console.log(data.user.id);
-          const authtoken = jwt.sign(data, JWT_SECRET);
-          res.json({ authtoken });
+            const data = {
+              user: {
+                id: result[0].email,
+              },
+            };
+            console.log(data.user.id);
+            const authtoken = jwt.sign(data, JWT_SECRET);
+            res.json({ authtoken });
+          }
         }
       }
     );
