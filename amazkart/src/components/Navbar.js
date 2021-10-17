@@ -1,8 +1,14 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 
 export default function Navbar(props) {
+  let history = useHistory();
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    history.push("/");
+    window.location.reload();
+  };
   return (
     <div className="navbar-container">
       <nav className="navbar navbar-expand-lg navbar-light bg-light">
@@ -61,9 +67,15 @@ export default function Navbar(props) {
                 alt="..."
               />
             </Link>
-            <Link to="/login" className="btn btn-primary">
-              Login / Sign up
-            </Link>
+            {!localStorage.getItem("token") ? (
+              <Link to="/login" className="btn btn-primary">
+                Login / Sign up
+              </Link>
+            ) : (
+              <button className="btn btn-primary" onClick={handleLogout}>
+                Logout
+              </button>
+            )}
             <Link to="/sell" className="btn btn-primary mx-2">
               Seller
             </Link>
