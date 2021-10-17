@@ -16,17 +16,20 @@ router.post("/createuser", async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     //const email = String(req.body.email);
     const secPas = await bcrypt.hash(req.body.password, salt);
-    const create = db.query(
+    db.query(
       "INSERT INTO user(name,password,email,role) VALUES (?,?,?,?)",
       [req.body.name, secPas, useremail, req.body.role],
       (err, result) => {
         if (err) {
           res.send("User with given email exists");
         } else {
-          // console.log(result);
+          console.log(result);
           const data = {
-            id: result.email,
+            user: {
+              id: useremail,
+            },
           };
+
           const authToken = jwt.sign(data, JWT_SECRET);
           res.json({ authToken });
         }
@@ -41,15 +44,17 @@ router.post("/login", async (req, res) => {
   const { email, password } = req.body;
   try {
     db.query(
-      `SELECT * FROM user WHERE email = ${email}`,
+      "SELECT * FROM user WHERE email =?",
+      [email],
       async (err, result) => {
         if (err) {
-          console.log(err);
+          return res.status(400).json({ error: "Wrong email id or password" });
         } else {
-          console.log(result);
+          //const rpass = result[0].password;
+          // console.log(rpass);
           const passwordCompare = await bcrypt.compare(
             password,
-            result.password
+            result[0].password
           );
           if (!passwordCompare) {
             return res.status(400).json({ error: "Wrong password" });
@@ -57,9 +62,10 @@ router.post("/login", async (req, res) => {
 
           const data = {
             user: {
-              id: result.email,
+              id: result[0].email,
             },
           };
+          console.log(data.user.id);
           const authtoken = jwt.sign(data, JWT_SECRET);
           res.json({ authtoken });
         }
@@ -72,10 +78,11 @@ router.post("/login", async (req, res) => {
 });
 router.post("/getuser", fetchuser, async (req, res) => {
   try {
-    console.log(`SELECT * FROM user WHERE email = "${req.body.email}"`);
-    //useremail = `"\"${req.body.email}\""`;
+    const useremail = req.user.id;
+    // console.log(req.user.id);
     db.query(
-      `SELECT * FROM user WHERE email = \"${req.data.user.id}\"`,
+      "SELECT name,email FROM user WHERE email = ?",
+      [useremail],
       (err, result) => {
         if (err) {
           console.log(err);
