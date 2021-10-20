@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Axios from "axios";
+import userContext from "../context/user/userContext";
 export default function Seller() {
   const [quantity, setQuantity] = useState(0);
   const [price, setPrice] = useState(0);
@@ -31,6 +32,17 @@ export default function Seller() {
       quantiy: "50",
     },
   ];
+
+  const context = useContext(userContext);
+  // eslint-disable-next-line
+  const { info, getUser } = context;
+
+  useEffect(() => {
+    getUser();
+    console.log(info);
+    // eslint-disable-next-line
+  }, []);
+  //console.log(info);
   const addproduct = () => {
     console.log([pname, quantity, seller, price]);
     Axios.post("http://localhost:3001/addproducts", {
@@ -46,6 +58,7 @@ export default function Seller() {
     <div className="container my-3">
       <h1>Welcome SaiKumar Andure! </h1>
       <h4>Here you can easily manage your products</h4>
+
       <div className="container my-3">
         <div className="viewproducts">
           <ol className="list-group list-group-numbered">

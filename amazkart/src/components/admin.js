@@ -46,6 +46,7 @@ export default function Admin() {
     },
   ]);
   const onReject = (seller) => {
+    //props.showAlert("rejected", "danger");
     console.log("I am the reject of ", seller);
     setSellers(
       sellers.filter((event) => {

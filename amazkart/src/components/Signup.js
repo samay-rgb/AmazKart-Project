@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "../Signup.css";
 import { useHistory } from "react-router-dom";
-function SignUpIn() {
+function SignUpIn(props) {
   const [isRight, setState] = useState(false);
   let history = useHistory();
   const [logincredentials, setLogincredentials] = useState({
@@ -34,7 +34,7 @@ function SignUpIn() {
       history.push("/");
       window.location.reload();
     } else {
-      alert("Invalid credentials");
+      props.showAlert(json.errors, "danger");
     }
   };
   const handleLogin = async (e) => {
@@ -57,7 +57,7 @@ function SignUpIn() {
       history.push("/");
       window.location.reload();
     } else {
-      alert("Invalid credentials");
+      props.showAlert(json.errors, "danger");
     }
   };
   const onChange = (e) => {
@@ -82,11 +82,6 @@ function SignUpIn() {
         <div className="form-container sign-up-container">
           <form className="login_form" action="#" onSubmit={handleSignUp}>
             <h1 className="h1">Create Account</h1>
-            {/* <div className="social-container">
-				<a className="login_a" href="#" className="social"><i className="fab fa-facebook-f"></i></a>
-				<a className="login_a" href="#" className="social"><i className="fab fa-google-plus-g"></i></a>
-				<a className="login_a" href="#" className="social"><i className="fab fa-linkedin-in"></i></a>
-			</div> */}
             <span className="span">or use your email for registration</span>
             <input
               className="login_input"

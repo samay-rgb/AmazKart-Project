@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Cartitem from "./Cartitem";
 import img1 from "./img1.jpg";
 import { Link } from "react-router-dom";
-export default function Cart() {
+export default function Cart(props) {
   const [cartItems, setCartItem] = useState([
     { imgSrc: img1, productName: "Laptop1", qty: 1, productPrice: 1200, id: 1 },
     { imgSrc: img1, productName: "Laptop2", qty: 1, productPrice: 1550, id: 2 },
@@ -18,6 +18,7 @@ export default function Cart() {
         return event !== item;
       })
     );
+    props.showAlert("Item removed from cart", "danger");
   };
 
   const totalCost = (cartItems) => {

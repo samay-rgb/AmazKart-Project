@@ -10,7 +10,7 @@ const JWT_SECRET = "darthskywalker";
 router.post(
   "/createuser",
   [
-    body("name", "Enter a valid name").isLength({ min: 5 }),
+    body("name", "Enter a valid name").isLength({ min: 3 }),
     body("email", "Enter a valid email").isEmail(),
     body("password", "Password must be atleast 8 characters").isLength({
       min: 8,
@@ -20,7 +20,7 @@ router.post(
     let success = false;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ success, errors: errors.array() });
+      return res.status(400).json({ success, errors: errors.array()[0].msg });
     }
     try {
       // console.log(email);
@@ -59,7 +59,7 @@ router.post(
   "/login",
   [
     body("email", "Enter a valid email").isEmail(),
-    body("password", "Password must be atleast 5 characters").isLength({
+    body("password", "Password must be atleast 8 characters").isLength({
       min: 8,
     }),
   ],
@@ -67,7 +67,7 @@ router.post(
     let success = false;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ success, errors: errors.array() });
+      return res.status(400).json({ success, errors: errors.array()[0].msg });
     }
     const { email, password } = req.body;
     useremail = `"${email}"`;
@@ -79,14 +79,14 @@ router.post(
           if (err) {
             return res
               .status(400)
-              .json({ success, error: "Wrong email id or password" });
+              .json({ success, errors: "Wrong email id or password" });
           } else {
             //const rpass = result[0].password;
             // console.log(rpass);
             if (result.length === 0) {
               return res
                 .status(400)
-                .json({ success, error: "Wrong email id or password" });
+                .json({ success, errors: "Wrong email id or password" });
             } else {
               const passwordCompare = await bcrypt.compare(
                 password,
@@ -95,7 +95,7 @@ router.post(
               if (!passwordCompare) {
                 return res
                   .status(400)
-                  .json({ success, error: "Wrong password" });
+                  .json({ success, errors: "Wrong password" });
               }
               success = true;
               const data = {
@@ -121,14 +121,14 @@ router.post("/getuser", fetchuser, async (req, res) => {
     const useremail = req.user.id;
     // console.log(req.user.id);
     db.query(
-      "SELECT name,email FROM user WHERE email = ?",
+      "SELECT name,email,role FROM user WHERE email = ?",
       [useremail],
       (err, result) => {
         if (err) {
           console.log(err);
         } else {
-          console.log(result);
-          res.send(result);
+          //  console.log(result);
+          res.send(result[0]);
         }
       }
     );
