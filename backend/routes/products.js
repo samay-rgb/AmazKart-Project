@@ -26,9 +26,10 @@ router.get("/getlaptops", async (req, res) => {
     }
   );
 });
-router.get("/getSellerItems/:id", async (req, res) => {
-  const id = req.params.id;
-  db.query(`SELECT * FROM products WHERE seller = ${id}`, (err, result) => {
+router.post("/getSellerItems", async (req, res) => {
+  const seller_id =  req.body.seller_id;
+  const id = seller_id.slice(1, seller_id.length-1)
+  db.query("SELECT * FROM products WHERE seller_id = ?",[id] ,(err, result) => {
     if (err) {
       console.log(err);
     } else {
@@ -48,7 +49,30 @@ router.get("/getphones", async (req, res) => {
     }
   );
 });
-
+router.get("/getcamera", async (req, res) => {
+  db.query(
+    "SELECT * FROM products WHERE category LIKE 'Camera'",
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
+router.get("/getwireless", async (req, res) => {
+  db.query(
+    "SELECT * FROM products WHERE category LIKE 'Wireless'",
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+    }
+  );
+})
 router.post("/addproducts", async (req, res) => {
   const pname = req.body.pname;
   const price = req.body.price;
@@ -56,9 +80,11 @@ router.post("/addproducts", async (req, res) => {
   const img_url = req.body.img_url;
   const category = req.body.category;
   const description = req.body.description;
+  const seller_id =  req.body.seller_id;
+  const id = seller_id.slice(1, seller_id.length-1)
   db.query(
     "INSERT INTO products(pname,price,quantity,category,img_url,description,seller_id) VALUES (?,?,?,?,?,?,?)",
-    [pname, price, quantity, category, img_url, description, 213],
+    [pname, price, quantity, category, img_url, description,id],
     (err, result) => {
       if (err) {
         console.log(err);

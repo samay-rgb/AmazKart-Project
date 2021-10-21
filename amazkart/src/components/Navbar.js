@@ -1,8 +1,24 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import PropTypes from "prop-types";
-import { Link } from "react-router-dom";
-
+import { Link, useHistory } from "react-router-dom";
+import userContext from "../context/user/userContext";
 export default function Navbar(props) {
+  let history = useHistory();
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    history.push("/");
+    window.location.reload();
+    props.showAlert("logged out", "danger");
+  };
+  const context = useContext(userContext);
+  // eslint-disable-next-line
+  const { info, getUser } = context;
+
+  useEffect(() => {
+    getUser();
+    // eslint-disable-next-line
+  }, []);
+
   return (
     <div className="navbar-container">
       <nav className="navbar navbar-expand-lg navbar-light bg-light">
@@ -34,7 +50,7 @@ export default function Navbar(props) {
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" to="/">
+                <Link className="nav-link" to="/wireless">
                   Wireless devices
                 </Link>
               </li>
@@ -44,32 +60,40 @@ export default function Navbar(props) {
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" to="/">
+                <Link className="nav-link" to="/cameras">
                   Cameras
                 </Link>
               </li>
-              <li className="nav-item">
-                <Link className="nav-link" to="/">
-                  Accessories
-                </Link>
-              </li>
+              
             </ul>
-            <Link to="/cart" className="link-dark mx-3">
+            <Link to="/cart" className="link-dark mx-3" style={ !localStorage.getItem("token") ? {display:"none"} : {} }>
               <img
                 title="Go to Cart"
-                src="https://img.icons8.com/external-flatart-icons-solid-flatarticons/50/000000/external-cart-marketing-flatart-icons-solid-flatarticons.png"
+                src="https://www.svgrepo.com/show/80543/shopping-cart-outline.svg"
                 alt="..."
+                style={{width:"40px"}}
               />
             </Link>
-            <Link to="/login" className="btn btn-primary">
-              Login / Sign up
-            </Link>
-            <Link to="/sell" className="btn btn-primary mx-2">
-              Seller
-            </Link>
-            <Link to="/admin" className="btn btn-primary mx-2">
-              Admin
-            </Link>
+            {!localStorage.getItem("token") ? (
+              <Link to="/login" className="btn btn-primary">
+                Login / Sign up
+              </Link>
+            ) : (
+              <button className="btn btn-primary" onClick={handleLogout}>
+                Logout
+              </button>
+            )}
+
+            {info.role === "Seller" && (
+              <Link to="/sell" className="btn btn-primary mx-2">
+                Seller
+              </Link>
+            )}
+            {info.role === "Admin" && (
+              <Link to="/admin" className="btn btn-primary mx-2">
+                Admin
+              </Link>
+            )}
           </div>
         </div>
       </nav>

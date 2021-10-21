@@ -1,18 +1,19 @@
-import React from "react";
-//import img1 from "./img1.jpg";
+import React,{useState,useEffect} from "react";
+import Axios from "axios";
 export default function Checkout() {
-  const items = [
-    { productName: "Laptop1", qty: 5, productPrice: 1200, id: 1 },
-    { productName: "Laptop2", qty: 1, productPrice: 1550, id: 2 },
-    { productName: "Laptop3", qty: 2, productPrice: 2500, id: 3 },
-    { productName: "Laptop4", qty: 5, productPrice: 500, id: 4 },
-    { productName: "Laptop5", qty: 4, productPrice: 150, id: 5 },
-    { productName: "Laptop6", qty: 2, productPrice: 1599, id: 6 },
-  ];
+  const [items,setItems] = useState([]);
+  const get_cart_item = () =>{
+    Axios.get("http://localhost:3001/cart/getcartitems").then((response)=>{
+      setItems(response.data);
+    });
+  };
+  useEffect(() => {
+    get_cart_item();
+  }, []);
   const getTotal = () => {
     let Total = 0;
     for (let i = 0; i < items.length; i++) {
-      Total += items[i].productPrice * items[i].qty;
+      Total += items[i].price * items[i].quantity;
     }
     return Total;
   };
@@ -31,10 +32,10 @@ export default function Checkout() {
           <tbody>
             {items.map((element) => {
               return (
-                <tr key={element.id}>
-                  <td>{element.productName}</td>
-                  <td>{element.qty}</td>
-                  <td>${element.productPrice * element.qty}</td>
+                <tr key={element.pid}>
+                  <td>{element.pname}</td>
+                  <td>{element.quantity}</td>
+                  <td><span>&#x20B9;</span>{element.price * element.quantity}</td>
                 </tr>
               );
             })}
@@ -47,7 +48,7 @@ export default function Checkout() {
           Address: Nowhere Lorem ipsum dolor sit amet consectetur adipisicing
           elit. Eum, cum.
         </h3>
-        Total Cost= ${getTotal()} <br />
+        Total Cost= <span>&#x20B9;</span>{getTotal()} <br />
         Your order will be delivered in 4-5 days
         <button className="btn btn-primary mx-2">Place Order</button>
       </div>

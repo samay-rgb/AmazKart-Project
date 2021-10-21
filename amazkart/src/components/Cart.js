@@ -1,18 +1,24 @@
-import React, { useState } from "react";
+import React, { useState,useEffect} from "react";
 import Cartitem from "./Cartitem";
-import img1 from "./img1.jpg";
 import { Link } from "react-router-dom";
-export default function Cart() {
-  const [cartItems, setCartItem] = useState([
-    { imgSrc: img1, productName: "Laptop1", qty: 1, productPrice: 1200, id: 1 },
-    { imgSrc: img1, productName: "Laptop2", qty: 1, productPrice: 1550, id: 2 },
-    { imgSrc: img1, productName: "Laptop3", qty: 1, productPrice: 2500, id: 3 },
-    { imgSrc: img1, productName: "Laptop4", qty: 1, productPrice: 500, id: 4 },
-    { imgSrc: img1, productName: "Laptop5", qty: 1, productPrice: 150, id: 5 },
-    { imgSrc: img1, productName: "Laptop6", qty: 1, productPrice: 1599, id: 6 },
-  ]);
+import  Axios  from "axios";
+
+export default function Cart(props) {
+  const [cartItems,setCartItem] = useState([]);
+  const get_cart_item = () =>{
+    Axios.post("http://localhost:3001/cart/getcartitems",{email:props.email}).then((response)=>{
+      setCartItem(response.data);
+    });
+  };
+  useEffect(() => {
+    get_cart_item();
+    // eslint-disable-next-line
+  }, [])
   const onRemove = (item) => {
     console.log("I am the remove of ", item);
+    Axios.post("http://localhost:3001/cart/removefromcart",{id : item.cart_id}).then(()=>{
+      console.log("Item deleted");
+    });
     setCartItem(
       cartItems.filter((event) => {
         return event !== item;
@@ -20,17 +26,6 @@ export default function Cart() {
     );
   };
 
-  const totalCost = (cartItems) => {
-    let cost = 0;
-    for (let i = 0; i < cartItems.length; i++) {
-      // console.log(cartItems[i]);
-      cost += cartItems[i].productPrice * cartItems[i].qty;
-    }
-    return cost;
-  };
-  console.log(cartItems);
-
-  console.log(totalCost(cartItems));
   return (
     <>
       <div className="container">
@@ -39,7 +34,8 @@ export default function Cart() {
           style={{ width: "60%", margin: "0", padding: "0" }}
         >
           {cartItems.map((item) => {
-            return <Cartitem item={item} key={item.id} onRemove={onRemove} />;
+            console.log(item);
+            return <Cartitem item={item} key={item.pid} onRemove={onRemove} />;
           })}
           <Link
             to="/checkout"

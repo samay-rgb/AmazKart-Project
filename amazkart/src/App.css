@@ -73,7 +73,8 @@
   border-radius: 5px;
   padding: 1em 0.3em;
   box-shadow: 10px 5px 5px gray;
-  background: linear-gradient(rgb(255, 255, 255), rgb(230, 230, 230));
+  border-top:none;
+  border-left: none;
 }
 .seller-details {
   list-style-type: none;
@@ -90,4 +91,16 @@
   grid-gap: 5vw;
   margin: 2em;
   justify-content: center;
+}
+.small-field
+{
+  width:100px;
+}
+.medium-field
+{
+  width:500px;
+}
+.hide
+{
+  display:none;
 }

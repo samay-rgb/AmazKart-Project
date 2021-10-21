@@ -1,37 +1,43 @@
-import React from "react";
+import React,{useContext,useEffect} from "react";
+import userContext from "../context/user/userContext";
+import Axios from 'axios';
 export default function Items(props) {
-  /*const [counter, setCount] = useState(0);
-  const handleDec = () => {
-    if (counter) setCount(counter - 1);
+  const context = useContext(userContext);
+  // eslint-disable-next-line
+  const { info, getUser } = context;
+  const handleAddToCart = (email) =>{
+        Axios.post("http://localhost:3001/cart/addtocart",{props:props,email:email}).then(()=>{
+          console.log("product added to cart");
+        });
   };
-  const handleInc = () => {
-    setCount(counter + 1);
-  };
-  const changeOne = () => {
-    setCount(1);
-  };*/
+  useEffect(() => {
+    getUser();
+    // eslint-disable-next-line
+  }, []);
   return (
     <div className="col-md-3 my-3">
-      <div className="card" style={{ maxWidth: "18rem" }}>
+      <div className="card" style={{ maxWidth: "18rem" ,height: "37rem",position:'relative'}}>
         <img
-          src={props.image}
+          src={props.img_url}
           className="card-img-top"
           alt="..."
           style={{ height: "15rem" }}
         />
         <div className="card-body">
-          <h5 className="card-title">{props.name}</h5>
-          <p className="card-text">{props.description}</p>
-          <h3 className="price">Price = ${props.price}</h3>
+          <h5 className="card-title my-2">{props.name}</h5>
+          <h6>{props.category}</h6>
+          <p className="card-text" style={{maxHeight: "5rem",overflowY:'scroll'}}>{props.description}</p>
+          <div style={{position:"absolute",bottom:'1rem',left:'1rem'}}>
+          <h3 className="price my-3"><span>&#x20B9;</span>{props.price}</h3>
           {props.quantity !== 0 ? (
-            <button href="/" className="btn btn-primary">
-              Add to Cart
-            </button>
-          ) : (
-            <h4 style={{ color: "red" }}>Out of stock</h4>
-          )}
+          <button href="/" className="btn btn-primary" onClick={()=>{handleAddToCart(info.email)}} disabled={ !localStorage.getItem("token") ? 'disabled' : '' }>Add to Cart</button>
+        ) : (
+          <h4 style={{ color: "red" }}>Out of stock</h4>
+        )}
+          </div>
         </div>
       </div>
     </div>
   );
 }
+
