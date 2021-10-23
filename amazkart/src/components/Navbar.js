@@ -66,7 +66,7 @@ export default function Navbar(props) {
               </li>
               
             </ul>
-            <Link to="/cart" className="link-dark mx-3" style={ !localStorage.getItem("token") ? {display:"none"} : {} }>
+            <Link to="/cart" className="link-dark mx-3" style={ (!localStorage.getItem("token") || info.role!=="Buyer")? {display:"none"} : {} }>
               <img
                 title="Go to Cart"
                 src="https://www.svgrepo.com/show/80543/shopping-cart-outline.svg"

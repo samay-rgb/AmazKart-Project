@@ -5,7 +5,7 @@ export default function Carousel() {
     <div>
       <div
         id="carouselExampleCaptions"
-        className="carousel slide"
+        className="carousel slide my-1"
         data-bs-ride="carousel"
       >
         <div className="carousel-indicators">

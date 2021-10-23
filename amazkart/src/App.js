@@ -16,6 +16,8 @@ import Admin from "./components/admin";
 import Laptops from "./components/Laptops";
 import Camera from "./components/Camera";
 import Wireless from "./components/Wireless";
+import BuyerForm from "./components/BuyerForm"
+import SellerForm from "./components/SellerForm"
 import UserState from "./context/user/userState";
 import Alert from "./components/Alert";
 function App() {
@@ -44,6 +46,12 @@ function App() {
             </Route>
             <Route exact path="/login">
               <SignUpIn showAlert={showAlert} />
+            </Route>
+            <Route exact path="/buyerform">
+              <BuyerForm showAlert={showAlert} />
+            </Route>
+            <Route exact path="/sellerform">
+              <SellerForm showAlert={showAlert} />
             </Route>
             <Route exact path="/cart">
               <Cart showAlert={showAlert} />

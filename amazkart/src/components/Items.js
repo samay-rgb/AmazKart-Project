@@ -29,10 +29,11 @@ export default function Items(props) {
           <p className="card-text" style={{maxHeight: "5rem",overflowY:'scroll'}}>{props.description}</p>
           <div style={{position:"absolute",bottom:'1rem',left:'1rem'}}>
           <h3 className="price my-3"><span>&#x20B9;</span>{props.price}</h3>
+          <p className="card-text my-0">{props.quantity} in stock.</p>
           {props.quantity !== 0 ? (
-          <button href="/" className="btn btn-primary" onClick={()=>{handleAddToCart(info.email)}} disabled={ !localStorage.getItem("token") ? 'disabled' : '' }>Add to Cart</button>
+          <button href="/" className="btn btn-primary" onClick={()=>{handleAddToCart(info.email)}} disabled={ (localStorage.getItem("token") && info.role==="Buyer") ? '' : 'disabled' }>Add to Cart</button>
         ) : (
-          <h4 style={{ color: "red" }}>Out of stock</h4>
+          <button className="btn btn-danger" disabled='disabled'>Out of stock</button>
         )}
           </div>
         </div>

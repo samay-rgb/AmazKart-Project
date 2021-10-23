@@ -26,6 +26,7 @@ export default function Itemholder() {
                 name={element.pname}
                 category={element.category}
                 description={element.description}
+                quantity = {element.quantity}
               />
             );
           })}

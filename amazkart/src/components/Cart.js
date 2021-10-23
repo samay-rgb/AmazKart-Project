@@ -1,19 +1,24 @@
-import React, { useState,useEffect} from "react";
+import React, { useState,useEffect,useContext} from "react";
 import Cartitem from "./Cartitem";
 import { Link } from "react-router-dom";
 import  Axios  from "axios";
-
-export default function Cart(props) {
+import userContext from "../context/user/userContext";
+export default function Cart() {
+  const context = useContext(userContext);
+  // eslint-disable-next-line
+  const { info, getUser } = context;
+  useEffect(() => {
+    getUser();
+    get_cart_item();
+    // eslint-disable-next-line
+  }, []);
   const [cartItems,setCartItem] = useState([]);
   const get_cart_item = () =>{
-    Axios.post("http://localhost:3001/cart/getcartitems",{email:props.email}).then((response)=>{
+    Axios.post("http://localhost:3001/cart/getcartitems").then((response)=>{
       setCartItem(response.data);
     });
   };
-  useEffect(() => {
-    get_cart_item();
-    // eslint-disable-next-line
-  }, [])
+  
   const onRemove = (item) => {
     console.log("I am the remove of ", item);
     Axios.post("http://localhost:3001/cart/removefromcart",{id : item.cart_id}).then(()=>{
@@ -25,7 +30,7 @@ export default function Cart(props) {
       })
     );
   };
-
+  let present = false;
   return (
     <>
       <div className="container">
@@ -33,20 +38,26 @@ export default function Cart(props) {
           className="container ml-0"
           style={{ width: "60%", margin: "0", padding: "0" }}
         >
-          {cartItems.map((item) => {
-            console.log(item);
-            return <Cartitem item={item} key={item.pid} onRemove={onRemove} />;
+          {cartItems.filter(item => `"${item.email}"` === info.email).map(filter_item => {
+            present = true;
+            return(
+              <Cartitem item={filter_item} key={filter_item.pid} onRemove={onRemove} />
+            );
           })}
           <Link
             to="/checkout"
-            className="btn btn-primary text-center "
+          >
+            <button className="btn btn-primary text-center "
             style={{
               marginLeft: "640px",
               width: "175px",
               marginBottom: "10px",
+              position:"absolute",
+              top: "5em",
+              right: "1em"
             }}
-          >
-            Proceed to checkout
+            disabled={ present ? '' : 'disabled' }>Proceed to checkout</button>
+
           </Link>
         </div>
       </div>

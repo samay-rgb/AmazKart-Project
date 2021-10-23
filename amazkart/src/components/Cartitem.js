@@ -5,7 +5,7 @@ export default function Cartitem({ item, onRemove }) {
   const handleDec = (item) => {
     if (counter>1) {
       setCount(counter-1);
-      Axios.post("http://localhost:3001/cart/increaseQty",{id:item.cart_id,quantity:counter-1}).then(()=>{ 
+      Axios.post("http://localhost:3001/cart/decreaseQty",{id:item.cart_id,quantity:counter-1}).then(()=>{ 
         console.log("Quantity increased");
       });
     }
@@ -15,7 +15,7 @@ export default function Cartitem({ item, onRemove }) {
     }
   };
   const handleInc = (item) => {
-    if (counter < 5) {
+    if (counter < 5 ) {
       setCount(counter+1);
       Axios.post("http://localhost:3001/cart/increaseQty",{id:item.cart_id,quantity:counter+1}).then(()=>{ 
         console.log("Quantity increased");
@@ -25,6 +25,7 @@ export default function Cartitem({ item, onRemove }) {
 
   return (
     <>
+    {item.quantity}
       {counter !== 0 && (
         <div className="card-item-container">
           <div className="pimg">
@@ -34,7 +35,7 @@ export default function Cartitem({ item, onRemove }) {
             <ul className="desc-list">
               <li>Product : {item.pname}</li>
               <li>
-                <button className="btn btn-danger" onClick={handleDec}>
+                <button className="btn btn-danger" onClick={()=>{handleDec(item)}}>
                   -
                 </button>
               </li>

@@ -5,11 +5,9 @@ const db = require("../db");
 router.get("/", async (req, res) => {
   res.send("Cart Section");
 });
-router.post("/getcartitems" ,async (req, res) => {
-  const email = req.body.email;
-  const id = email.slice(1,email.length-1);
+router.post("/getcartitems",async (req, res) => {
   db.query(
-      "SELECT * FROM cart WHERE email=?",[id],
+      "SELECT * FROM cart",
       (err, result) => {
         if (err) {
           console.log(err);
@@ -65,5 +63,39 @@ router.post("/decreaseQty", async (req,res)=>{
         res.send("Quantity decreased");
       }
   });
+});
+router.post("/order", async (req,res)=>{
+  const email = req.body.email;
+  const id = email.slice(1,email.length-1);
+  const today = new Date().toISOString().slice(0, 10);
+  db.query("INSERT INTO orders(pid,pname,quantity,total,date,buyer_email) (SELECT pid,pname,quantity,total,?,email from cart WHERE email=?)",[today,id],(err,result)=>{
+    if (err) {
+      console.log(err);
+    } else {
+      res.send("Order placed");
+    }
+    });
+});
+router.post("/updateinventory", async (req,res)=>{
+  const email = req.body.email;
+  const id = email.slice(1,email.length-1);
+  db.query("update products pd,orders od,(select distinct o.pid as pid,sum(o.quantity) as t_qty from orders o,products p where (o.pid = p.pid and o.buyer_email = ? and o.status='pending') group by o.pid) as ordersQty set pd.quantity = (pd.quantity - ordersQty.t_qty),od.status='dispatched' where pd.pid = ordersQty.pid;",[id],(err,result)=>{
+    if (err) {
+      console.log(err);
+    } else {
+      res.send("Inventory Updated");
+    }
+    });
+});
+router.post("/clearcart", async (req,res)=>{
+  const email = req.body.email;
+  const id = email.slice(1,email.length-1);
+  db.query("DELETE FROM cart where email=?",[id],(err,result)=>{
+    if (err) {
+      console.log(err);
+    } else {
+      res.send("Order placed");
+    }
+    });
 });
 module.exports = router;

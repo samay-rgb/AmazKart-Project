@@ -27,6 +27,7 @@ export default function Smartphone() {
                 img_url={element.img_url}
                 name={element.pname}
                 description={element.description}
+                quantity={element.quantity}
               />
             );
           })}
