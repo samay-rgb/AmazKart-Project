@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import "../Signup.css";
 import { useHistory } from "react-router-dom";
-import Axios from "axios";
 function SignUpIn(props) {
   const [isRight, setState] = useState(false);
   const [role, setRole] = useState("Buyer");
@@ -28,40 +27,16 @@ function SignUpIn(props) {
         password: signcreds.password,
         role: role,
       }),
-    }).then(()=>{
-      setLogincredentials({email:signcreds.email,password:signcreds.password});
-      if(role==="Seller")
-      {
-          Axios.post("http://localhost:3001/auth/addseller",{email:signcreds.email}).then(()=>{
-          handleLogin2();
-        });
-      }
-      else if(role==="Buyer")
-      {
-        Axios.post("http://localhost:3001/auth/addbuyer",{email:signcreds.email}).then(()=>{
-          handleLogin2();
-        });
-      }
-    });
-  };
-  const handleLogin2 = async() => {
-    const response = await fetch("http://localhost:3001/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: logincredentials.email,
-        password: logincredentials.password,
-      }),
     });
     const json = await response.json();
     console.log(json);
     if (json.success) {
-      // Save the auth token and redirect
       localStorage.setItem("token", json.authtoken);
-      history.push("/");
-      window.location.reload();
+      if (role === "Buyer") history.push("/buyerform");
+      else if (role === "Seller") history.push("/sellerform");
+      localStorage.setItem("token", json.authtoken);
+      // window.location.reload();
+      //history.push("/");
     } else {
       props.showAlert(json.errors, "danger");
     }

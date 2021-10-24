@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
-export default function Buyer() {
+export default function Buyer(props) {
   let history = useHistory();
   const [buyercreds, setBuyercreds] = useState({
     address: "",
@@ -26,6 +26,11 @@ export default function Buyer() {
     if (json.success) {
       // Save the auth token and redirect
       history.push("/");
+      window.location.reload();
+      props.showAlert(
+        "Account created successfully. Login to continue",
+        "success"
+      );
       // window.location.reload();
     } else {
       alert("danger");

@@ -7,7 +7,7 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/getpendingseller", async (req,res)=>{
-    db.query("SELECT distinct u.name,u.email,s.w_state,s.w_address,s.w_pincode FROM user u,seller s WHERE (u.approved=0 and u.role='Seller')",(err, result) => {
+    db.query("SELECT distinct u.name,u.email,s.w_state,s.w_address,s.w_pincode FROM user u inner join seller s on u.email=s.email WHERE (u.approved=0 and u.role='Seller')",(err, result) => {
         if (err) {
           console.log(err);
         } else {

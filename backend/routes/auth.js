@@ -36,7 +36,7 @@ router.post(
         (err, result) => {
           if (err) {
             console.log(err);
-            res.send({ success });
+            res.send({ success, errors: "User with given email exists" });
           } else {
             // console.log(result);
             const data = {
@@ -45,8 +45,8 @@ router.post(
               },
             };
             success = true;
-            const authToken = jwt.sign(data, JWT_SECRET);
-            res.json({ success, authToken });
+            const authtoken = jwt.sign(data, JWT_SECRET);
+            res.json({ success, authtoken });
           }
         }
       );
@@ -72,14 +72,12 @@ router.post(
     }
     const { email, password } = req.body;
     useremail = `"${email}"`;
-    console.log(useremail);
     try {
       db.query(
         "SELECT * FROM user WHERE email =?",
         [useremail],
         async (err, result) => {
           if (err) {
-            console.log(err);
             return res
               .status(400)
               .json({ success, errors: "Wrong email id or password" });
@@ -124,7 +122,7 @@ router.post("/getuser", fetchuser, async (req, res) => {
     const useremail = req.user.id;
     // console.log(req.user.id);
     db.query(
-      "SELECT name,email,role,approved FROM user WHERE email = ?",
+      "SELECT name,email,role FROM user WHERE email = ?",
       [useremail],
       (err, result) => {
         if (err) {
@@ -140,14 +138,17 @@ router.post("/getuser", fetchuser, async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 });
-router.post("/buyerinfo", async (req, res) => {
+router.post("/buyerinfo", fetchuser, async (req, res) => {
   let success = false;
   try {
-    const useremail = req.body.email;
+    let useremail = req.user.id;
+    useremail = useremail.slice(1, useremail.length - 1);
+    const email = `"${useremail}"`;
+    console.log(useremail);
     // console.log(req.user.id);
     db.query(
-      "UPDATE buyer SET pincode=?,address=?,contact=? WHERE email=?",
-      [req.body.pincode, req.body.address, req.body.contact,useremail],
+      "INSERT INTO buyer(email,pincode,address,contact) VALUES(?,?,?,?)",
+      [email, req.body.pincode, req.body.address, req.body.contact],
       (err, result) => {
         if (err) {
           console.log(useremail);
@@ -165,20 +166,23 @@ router.post("/buyerinfo", async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 });
-router.post("/sellerinfo", async (req, res) => {
+router.post("/sellerinfo", fetchuser, async (req, res) => {
   let success = false;
   try {
-    const useremail = req.body.email;
+    let useremail = req.user.id;
+    useremail = useremail.slice(1, useremail.length - 1);
+    const email = `"${useremail}"`;
+    // console.log(req.user.id);
     db.query(
-      "UPDATE seller SET w_address=?,w_pincode=?,w_contact=?,w_state=?,ac_number=?,ifsc_code=?) WHERE email=?",
+      "INSERT INTO seller(email,w_address,w_pincode,w_contact,w_state,ac_number,ifsc_code) VALUES (?,?,?,?,?,?,?)",
       [
+        email,
         req.body.address,
         req.body.pincode,
         req.body.contact,
         req.body.state,
         req.body.acno,
         req.body.ifsc,
-        useremail,
       ],
       (err, result) => {
         if (err) {
@@ -186,7 +190,7 @@ router.post("/sellerinfo", async (req, res) => {
         } else {
           success = true;
           //  console.log(result);
-          res.send({ success, msg: "Seller info added successfully" });
+          res.send({ success, msg: "Buyer info added successfully" });
         }
       }
     );
@@ -195,47 +199,25 @@ router.post("/sellerinfo", async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 });
-router.post("/addseller", async(req,res)=>{
-  const useremail = `"${req.body.email}"`;
-  db.query("INSERT INTO seller(email) VALUE (?)",[useremail],(err,result)=>{
-    if(err)
-    {
-      console.log(err);
-    }else{
-      res.send("Pending Seller added");
-    }
-  })
+router.post("/isApproved", fetchuser, async (req, res) => {
+  try {
+    const useremail = req.user.id;
+    // console.log(req.user.id);
+    db.query(
+      "SELECT approved FROM seller WHERE email = ?",
+      [useremail],
+      (err, result) => {
+        if (err) {
+          console.log(err);
+        } else {
+          //  console.log(result);
+          res.send(result[0]);
+        }
+      }
+    );
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Internal Server Error");
+  }
 });
-router.post("/addbuyer", async(req,res)=>{
-  const useremail = `"${req.body.email}"`;
-  db.query("INSERT INTO buyer(email) VALUE (?)",[useremail],(err,result)=>{
-    if(err)
-    {
-      console.log(err);
-    }else{
-      res.send("Buyer added");
-    }
-  })
-});
-// router.post("/isApproved", async (req, res) => {
-//   try {
-//     const useremail = req.body.email;
-//     console.log("Usermail: "+useremail);
-//     db.query(
-//       "SELECT approved FROM seller WHERE email = ?",
-//       [useremail],
-//       (err, result) => {
-//         if (err) {
-//           console.log(err);
-//         } else {
-//           console.log(result);
-//           res.send(result[0]);
-//         }
-//       }
-//     );
-//   } catch (error) {
-//     console.error(error.message);
-//     res.status(500).send("Internal Server Error");
-//   }
-// });
 module.exports = router;
