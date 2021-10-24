@@ -48,10 +48,10 @@ function App() {
               <SignUpIn showAlert={showAlert} />
             </Route>
             <Route exact path="/buyerform">
-              <BuyerForm showAlert={showAlert} />
+              <BuyerForm />
             </Route>
             <Route exact path="/sellerform">
-              <SellerForm showAlert={showAlert} />
+              <SellerForm />
             </Route>
             <Route exact path="/cart">
               <Cart showAlert={showAlert} />

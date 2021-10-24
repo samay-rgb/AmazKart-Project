@@ -1,15 +1,15 @@
 import React from "react";
-export default function RegSeller({ seller, onReject }) {
+export default function RegSeller({ seller, onReject,onApprove }) {
   return (
     <div className="seller-card">
       <ul className="seller-details">
         <li>Name : {seller.name}</li>
-        <li>Warehouse : {seller.warehouse}</li>
-        <li>Contact : {seller.contact}</li>
-        <li>Aadhar : {seller.aadhar}</li>
-        <li>Id : {seller.id}</li>
+        <li>Warehouse : {seller.w_address}</li>
+        <li>Pincode : {seller.w_pincode}</li>
+        <li>Address : {seller.w_address}</li>
+        <li>e-Mail : {seller.email}</li>
       </ul>
-      <button id="approve-seller" className="btn btn-small btn-primary">
+      <button id="approve-seller" className="btn btn-small btn-primary" onClick={()=>{onApprove(seller);}}>
         Approve
       </button>
       <button
