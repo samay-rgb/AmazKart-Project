@@ -1,7 +1,9 @@
 import React, { useState,useEffect,useContext} from "react";
 import userContext from "../context/user/userContext";
 import Axios from "axios";
-
+import {toast} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+toast.configure()
 export default function Seller() {
   const [quantity, setQuantity] = useState(0);
   const [price, setPrice] = useState(0);
@@ -10,6 +12,7 @@ export default function Seller() {
   const [img_url, setUrl] = useState("");
   const [description, setDescription] = useState("");
   const [products,setProducts] = useState([]);
+  const [pid,setPid] = useState(0);
   const context = useContext(userContext);
   // eslint-disable-next-line
   const { info, getUser } = context;
@@ -24,7 +27,9 @@ export default function Seller() {
     console.log(info);
     // eslint-disable-next-line
   }, []);
-
+  const seller_toast = () =>{
+    toast.success("Operation Successfull");
+  }
   const addproduct = (email) => {
     console.log([pname,quantity,price,img_url,category,description]);
     Axios.post("http://localhost:3001/products/addproducts", {
@@ -36,8 +41,17 @@ export default function Seller() {
       description:description,
       seller_id:email,
     }).then(() => {
-      alert('Product added successfuly');
-      console.log("successfuly added the product");
+        seller_toast();
+    });
+  };
+  const updateproduct = (email) => {
+    Axios.post("http://localhost:3001/products/updateproduct", {
+      email:email,
+      quantity: quantity,
+      price: price,
+      pid:pid,
+    }).then(() => {
+      seller_toast();
     });
   };
   return (
@@ -59,6 +73,7 @@ export default function Seller() {
                   <div className="ms-2 me-auto">
                     <div className="fw-bold">{element.pname}</div>
                     Rate=  <span>&#x20B9;</span>{element.price}
+                    <p className="my-0">PID : {element.pid}</p>
                   </div>
                   <span className="badge bg-primary rounded-pill">
                     {element.quantity}
@@ -74,7 +89,23 @@ export default function Seller() {
         <h2 className="text-center">
           Add new products or manage existing products
         </h2>
+        <p>*Note : You can only update product price or quantity, by providing PID. Please fill both fields while updating.</p>
         <form action="" className="my-3">
+        <div className="mb-3">
+            <label htmlFor="title" className="form-label">
+              Product ID(PID)
+            </label>
+            <input
+              type="number"
+              className="form-control"
+              id="title"
+              name="title"
+              aria-describedby="emailHelp"
+              onChange={(event) => {
+                setPid(event.target.value);
+              }}
+            />
+          </div>
           <div className="mb-3">
             <label htmlFor="title" className="form-label">
               Product Name
@@ -160,7 +191,7 @@ export default function Seller() {
           >
             Add to Catalogue
           </button>
-          <button type="submit" className="btn btn-info mx-3">
+          <button type="submit" className="btn btn-info mx-3" onClick={()=>{updateproduct(info.email)}}>
             Update catalogue
           </button>
         </form>

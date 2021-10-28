@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
+import {toast} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+toast.configure()
 export default function SellerForm() {
   let history = useHistory();
   const [sellercreds, setSellercreds] = useState({
@@ -33,6 +36,8 @@ export default function SellerForm() {
       // Save the auth token and redirect
       history.push("/");
       window.location.reload();
+      toast.success("Signup Successful");
+      toast.warning("Please wait for admin to approve you");
     } else {
       alert("danger");
     }

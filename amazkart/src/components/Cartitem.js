@@ -15,7 +15,7 @@ export default function Cartitem({ item, onRemove }) {
     }
   };
   const handleInc = (item) => {
-    if (counter < 5 ) {
+    if (counter < 5 && counter < item.p_quantity) {
       setCount(counter+1);
       Axios.post("http://localhost:3001/cart/increaseQty",{id:item.cart_id,quantity:counter+1}).then(()=>{ 
         console.log("Quantity increased");
@@ -25,7 +25,6 @@ export default function Cartitem({ item, onRemove }) {
 
   return (
     <>
-    {item.quantity}
       {counter !== 0 && (
         <div className="card-item-container">
           <div className="pimg">

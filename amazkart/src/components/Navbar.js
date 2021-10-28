@@ -21,7 +21,6 @@ export default function Navbar(props) {
   
   return (
     <div className="navbar-container">
-      {/* {setApproved(info.email)} */}
       <nav className="navbar navbar-expand-lg navbar-light bg-light">
         <div className="container-fluid">
           <Link className="navbar-brand" to="/">
@@ -86,11 +85,16 @@ export default function Navbar(props) {
             )}
             {info.role === "Seller" &&(
               
-                <button className="btn btn-primary mx-2" disabled={info.approved ? '':"disabled"}><Link to="/sell" style={{color:"white"}}>Seller</Link></button>
+              <Link to="/sell" className={info.approved ? "btn btn-primary mx-2":"btn btn-primary mx-2 disabled"} style={{color:"white"}}>Seller</Link>
             )}
             {info.role === "Admin" && (
               <Link to="/admin" className="btn btn-primary mx-2">
                 Admin
+              </Link>
+            )}
+            {info.role === "Buyer" && (
+              <Link to="/profile" className="btn btn-success mx-2">
+                {info.name}
               </Link>
             )}
           </div>

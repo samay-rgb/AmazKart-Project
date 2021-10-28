@@ -19,6 +19,7 @@ import Wireless from "./components/Wireless";
 import BuyerForm from "./components/BuyerForm"
 import SellerForm from "./components/SellerForm"
 import UserState from "./context/user/userState";
+import Profile from "./components/Profile";
 import Alert from "./components/Alert";
 function App() {
 
@@ -42,7 +43,7 @@ function App() {
           <Switch>
             <Route exact path="/">
               <Carousel />
-              <Itemholder />
+              <Itemholder showAlert={showAlert} />
             </Route>
             <Route exact path="/login">
               <SignUpIn showAlert={showAlert} />
@@ -57,7 +58,7 @@ function App() {
               <Cart showAlert={showAlert} />
             </Route>
             <Route exact path="/sell">
-              <Seller />
+              <Seller showAlert={showAlert} />
             </Route>
             <Route exact path="/smartphone">
               <Smartphone />
@@ -76,6 +77,9 @@ function App() {
             </Route>
             <Route exact path="/laptops">
               <Laptops />
+            </Route>
+            <Route exact path="/profile">
+              <Profile />
             </Route>
           </Switch>
         </Router>

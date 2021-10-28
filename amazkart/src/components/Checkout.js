@@ -1,7 +1,16 @@
 import React,{useState,useEffect,useContext} from "react";
 import Axios from "axios";
 import userContext from "../context/user/userContext";
+import {toast} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useHistory } from "react-router-dom";
+toast.configure()
 export default function Checkout() {
+  const order_placed = () =>{
+      toast.success("Your order has been placed");
+      toast.success("Expected delivery 4-5 days");
+  };
+  let history = useHistory();
   const context = useContext(userContext);
   // eslint-disable-next-line
   const { info, getUser } = context;
@@ -27,8 +36,10 @@ export default function Checkout() {
     Axios.post("http://localhost:3001/cart/order",{email:email}).then(()=>{
         Axios.post("http://localhost:3001/cart/updateinventory",{email:email}).then(()=>{
           Axios.post("http://localhost:3001/cart/clearcart",{email:email}).then(()=>{
-            window.location.reload();
+            // window.location.reload();
             present = false;
+            history.push("/");
+            order_placed();
           });
         });  
     })

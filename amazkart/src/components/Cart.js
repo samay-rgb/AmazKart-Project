@@ -3,7 +3,10 @@ import Cartitem from "./Cartitem";
 import { Link } from "react-router-dom";
 import  Axios  from "axios";
 import userContext from "../context/user/userContext";
-export default function Cart() {
+import {toast} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+toast.configure()
+export default function Cart(props) {
   const context = useContext(userContext);
   // eslint-disable-next-line
   const { info, getUser } = context;
@@ -18,11 +21,10 @@ export default function Cart() {
       setCartItem(response.data);
     });
   };
-  
   const onRemove = (item) => {
     console.log("I am the remove of ", item);
     Axios.post("http://localhost:3001/cart/removefromcart",{id : item.cart_id}).then(()=>{
-      console.log("Item deleted");
+      remove_from_toast();
     });
     setCartItem(
       cartItems.filter((event) => {
@@ -30,10 +32,12 @@ export default function Cart() {
       })
     );
   };
+  const remove_from_toast = () =>{
+      toast.warning("Item removed from cart",{autoClose:2000});
+  };
   let present = false;
   return (
-    <>
-      <div className="container">
+      <div className="container cart">
         <div
           className="container ml-0"
           style={{ width: "60%", margin: "0", padding: "0" }}
@@ -61,6 +65,5 @@ export default function Cart() {
           </Link>
         </div>
       </div>
-    </>
   );
 }

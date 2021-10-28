@@ -23,8 +23,10 @@ router.post("/addtocart", async (req,res) =>{
     const name = req.body.props.name;
     const img_url = req.body.props.img_url;
     const email = req.body.email;
+    const p_quantity = req.body.props.quantity;
+    console.log("p_quantity : "+p_quantity);
     const id = email.slice(1,email.length-1);
-    db.query("INSERT INTO cart(pid,pname,quantity,price,email,img_url) VALUE (?,?,?,?,?,?)",[pid,name,1,price,id,img_url],(err,result)=>{
+    db.query("INSERT INTO cart(pid,pname,quantity,price,email,img_url,p_quantity) VALUE (?,?,?,?,?,?,?)",[pid,name,1,price,id,img_url,p_quantity],(err,result)=>{
         if (err) {
             console.log(err);
           } else {

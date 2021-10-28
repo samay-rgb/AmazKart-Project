@@ -38,12 +38,24 @@ router.post("/rejectseller", async(req,res)=>{
     });
 });
 router.post("/getbuyer", async (req,res)=>{
-    db.query("SELECT * FROM buyer",(err, result) => {
+    const email = req.body.email;
+    db.query("SELECT * FROM buyer WHERE email=?",[email],(err, result) => {
         if (err) {
           console.log(err);
         } else {
           res.send(result);
         }
       });
+});
+router.post("/getorders", async (req,res)=>{
+  const email = req.body.email;
+  const id = email.slice(1,email.length-1);
+  db.query("SELECT * FROM orders WHERE buyer_email=?",[id],(err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+    });
 });
 module.exports = router;

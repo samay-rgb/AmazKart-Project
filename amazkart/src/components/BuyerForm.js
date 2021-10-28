@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
+import {toast} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+toast.configure()
 export default function Buyer(props) {
   let history = useHistory();
   const [buyercreds, setBuyercreds] = useState({
@@ -27,10 +30,7 @@ export default function Buyer(props) {
       // Save the auth token and redirect
       history.push("/");
       window.location.reload();
-      props.showAlert(
-        "Account created successfully. Login to continue",
-        "success"
-      );
+      toast.success("SignUp Successful");
       // window.location.reload();
     } else {
       alert("danger");

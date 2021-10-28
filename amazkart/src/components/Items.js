@@ -1,19 +1,25 @@
 import React,{useContext,useEffect} from "react";
 import userContext from "../context/user/userContext";
 import Axios from 'axios';
+import {toast} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+toast.configure()
 export default function Items(props) {
   const context = useContext(userContext);
   // eslint-disable-next-line
   const { info, getUser } = context;
   const handleAddToCart = (email) =>{
         Axios.post("http://localhost:3001/cart/addtocart",{props:props,email:email}).then(()=>{
-          console.log("product added to cart");
+          added_to_cart_toast();
         });
   };
   useEffect(() => {
     getUser();
     // eslint-disable-next-line
   }, []);
+  const added_to_cart_toast = () =>{
+      toast.success('Product added to cart',{autoClose:2000});
+  };
   return (
     <div className="col-md-3 my-3">
       <div className="card" style={{ maxWidth: "18rem" ,height: "37rem",position:'relative'}}>

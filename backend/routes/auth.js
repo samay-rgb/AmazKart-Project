@@ -122,7 +122,7 @@ router.post("/getuser", fetchuser, async (req, res) => {
     const useremail = req.user.id;
     // console.log(req.user.id);
     db.query(
-      "SELECT name,email,role FROM user WHERE email = ?",
+      "SELECT name,email,role,approved FROM user WHERE email = ?",
       [useremail],
       (err, result) => {
         if (err) {

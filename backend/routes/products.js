@@ -73,6 +73,20 @@ router.get("/getwireless", async (req, res) => {
     }
   );
 })
+router.post("/updateproduct", async(req,res)=>{
+  const quantity = req.body.quantity;
+  const pid = req.body.pid;
+  const price = req.body.price;
+  const seller_id =  req.body.email;
+  const id = seller_id.slice(1, seller_id.length-1)
+  db.query("UPDATE products SET quantity=?,price=? WHERE pid=? and seller_id=?",[quantity,price,pid,id],(err,result)=>{
+    if (err) {
+      console.log(err);
+    } else {
+      res.send("Updated!");
+    }
+  });
+});
 router.post("/addproducts", async (req, res) => {
   const pname = req.body.pname;
   const price = req.body.price;
