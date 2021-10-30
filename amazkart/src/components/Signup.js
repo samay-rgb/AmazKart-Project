@@ -3,6 +3,7 @@ import "../Signup.css";
 import { useHistory } from "react-router-dom";
 function SignUpIn(props) {
   const [isRight, setState] = useState(false);
+  const [role, setRole] = useState("Buyer");
   let history = useHistory();
   const [logincredentials, setLogincredentials] = useState({
     email: "",
@@ -24,15 +25,18 @@ function SignUpIn(props) {
         name: signcreds.name,
         email: signcreds.email,
         password: signcreds.password,
+        role: role,
       }),
     });
     const json = await response.json();
     console.log(json);
     if (json.success) {
-      // Save the auth token and redirect
       localStorage.setItem("token", json.authtoken);
-      history.push("/");
-      window.location.reload();
+      if (role === "Buyer") history.push("/buyerform");
+      else if (role === "Seller") history.push("/sellerform");
+      localStorage.setItem("token", json.authtoken);
+      // window.location.reload();
+      //history.push("/");
     } else {
       props.showAlert(json.errors, "danger");
     }
@@ -107,7 +111,16 @@ function SignUpIn(props) {
               onChange={onChange2}
               name="password"
             />
-
+            <select
+              id="Select"
+              className="form-select"
+              onChange={(event) => {
+                setRole(event.target.value);
+              }}
+            >
+              <option>Buyer</option>
+              <option>Seller</option>
+            </select>
             <button className="bn">Sign Up</button>
           </form>
         </div>

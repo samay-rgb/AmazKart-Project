@@ -1,60 +1,78 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Cartitem from "./Cartitem";
-import img1 from "./img1.jpg";
 import { Link } from "react-router-dom";
+import Axios from "axios";
+import userContext from "../context/user/userContext";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+toast.configure();
 export default function Cart(props) {
-  const [cartItems, setCartItem] = useState([
-    { imgSrc: img1, productName: "Laptop1", qty: 1, productPrice: 1200, id: 1 },
-    { imgSrc: img1, productName: "Laptop2", qty: 1, productPrice: 1550, id: 2 },
-    { imgSrc: img1, productName: "Laptop3", qty: 1, productPrice: 2500, id: 3 },
-    { imgSrc: img1, productName: "Laptop4", qty: 1, productPrice: 500, id: 4 },
-    { imgSrc: img1, productName: "Laptop5", qty: 1, productPrice: 150, id: 5 },
-    { imgSrc: img1, productName: "Laptop6", qty: 1, productPrice: 1599, id: 6 },
-  ]);
+  const context = useContext(userContext);
+  // eslint-disable-next-line
+  const { info, getUser } = context;
+  useEffect(() => {
+    getUser();
+    get_cart_item();
+    // eslint-disable-next-line
+  }, []);
+  const [cartItems, setCartItem] = useState([]);
+  const get_cart_item = () => {
+    Axios.post("http://localhost:3001/cart/getcartitems").then((response) => {
+      setCartItem(response.data);
+    });
+  };
   const onRemove = (item) => {
     console.log("I am the remove of ", item);
+    Axios.post("http://localhost:3001/cart/removefromcart", {
+      id: item.cart_id,
+    }).then(() => {
+      remove_from_toast();
+    });
     setCartItem(
       cartItems.filter((event) => {
         return event !== item;
       })
     );
-    props.showAlert("Item removed from cart", "danger");
   };
-
-  const totalCost = (cartItems) => {
-    let cost = 0;
-    for (let i = 0; i < cartItems.length; i++) {
-      // console.log(cartItems[i]);
-      cost += cartItems[i].productPrice * cartItems[i].qty;
-    }
-    return cost;
+  const remove_from_toast = () => {
+    toast.warning("Item removed from cart", { autoClose: 2000 });
   };
-  console.log(cartItems);
-
-  console.log(totalCost(cartItems));
+  let present = false;
   return (
-    <>
-      <div className="container">
-        <div
-          className="container ml-0"
-          style={{ width: "60%", margin: "0", padding: "0" }}
-        >
-          {cartItems.map((item) => {
-            return <Cartitem item={item} key={item.id} onRemove={onRemove} />;
+    <div className="container cart">
+      <div
+        className="container ml-0"
+        style={{ width: "60%", margin: "0", padding: "0" }}
+      >
+        {cartItems
+          .filter((item) => `"${item.email}"` === info.email)
+          .map((filter_item) => {
+            present = true;
+            return (
+              <Cartitem
+                item={filter_item}
+                key={filter_item.pid}
+                onRemove={onRemove}
+              />
+            );
           })}
-          <Link
-            to="/checkout"
+        <Link to="/checkout">
+          <button
             className="btn btn-primary text-center "
             style={{
               marginLeft: "640px",
               width: "175px",
               marginBottom: "10px",
+              position: "absolute",
+              top: "5em",
+              right: "1em",
             }}
+            disabled={present ? "" : "disabled"}
           >
             Proceed to checkout
-          </Link>
-        </div>
+          </button>
+        </Link>
       </div>
-    </>
+    </div>
   );
 }

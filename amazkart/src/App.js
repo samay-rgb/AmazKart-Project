@@ -2,8 +2,7 @@
 import Navbar from "./components/Navbar";
 import "./App.css";
 //import Titlebar from "./components/Titlebar";
-import { useState } from "react";
-import React from "react";
+import React, { useState } from "react";
 import Carousel from "./components/Carousel";
 //import Items from "./components/Items";
 import Itemholder from "./components/Itemholder";
@@ -15,11 +14,15 @@ import Smartphone from "./components/Smartphone";
 import Checkout from "./components/Checkout";
 import Admin from "./components/admin";
 import Laptops from "./components/Laptops";
+import Camera from "./components/Camera";
+import Wireless from "./components/Wireless";
+import BuyerForm from "./components/BuyerForm";
+import SellerForm from "./components/SellerForm";
 import UserState from "./context/user/userState";
+import Profile from "./components/Profile";
 import Alert from "./components/Alert";
 function App() {
   const [alert, setAlert] = useState(null);
-
   const showAlert = (message, type) => {
     setAlert({
       msg: message,
@@ -29,29 +32,41 @@ function App() {
       setAlert(null);
     }, 1500);
   };
+
   return (
     <div>
       <UserState>
         <Router>
           <Alert alert={alert} />
           <Navbar title="AmazKart" />
-
           <Switch>
             <Route exact path="/">
               <Carousel />
-              <Itemholder />
+              <Itemholder showAlert={showAlert} />
             </Route>
             <Route exact path="/login">
               <SignUpIn showAlert={showAlert} />
+            </Route>
+            <Route exact path="/buyerform">
+              <BuyerForm />
+            </Route>
+            <Route exact path="/sellerform">
+              <SellerForm />
             </Route>
             <Route exact path="/cart">
               <Cart showAlert={showAlert} />
             </Route>
             <Route exact path="/sell">
-              <Seller />
+              <Seller showAlert={showAlert} />
             </Route>
             <Route exact path="/smartphone">
               <Smartphone />
+            </Route>
+            <Route exact path="/cameras">
+              <Camera />
+            </Route>
+            <Route exact path="/wireless">
+              <Wireless />
             </Route>
             <Route exact path="/checkout">
               <Checkout />
@@ -61,6 +76,9 @@ function App() {
             </Route>
             <Route exact path="/laptops">
               <Laptops />
+            </Route>
+            <Route exact path="/profile">
+              <Profile />
             </Route>
           </Switch>
         </Router>
