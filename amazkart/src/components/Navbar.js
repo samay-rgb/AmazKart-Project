@@ -2,6 +2,7 @@ import React, { useContext, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Link, useHistory } from "react-router-dom";
 import userContext from "../context/user/userContext";
+
 export default function Navbar(props) {
   let history = useHistory();
   const handleLogout = () => {
@@ -11,13 +12,10 @@ export default function Navbar(props) {
     props.showAlert("logged out", "danger");
   };
   const context = useContext(userContext);
-  // eslint-disable-next-line
-  const { info, getUser } = context;
 
+  const { info, getUser } = context;
   useEffect(() => {
     getUser();
-    // eslint-disable-next-line
-    console.log(info);
     // eslint-disable-next-line
   }, []);
 
@@ -52,7 +50,7 @@ export default function Navbar(props) {
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" to="/">
+                <Link className="nav-link" to="/wireless">
                   Wireless devices
                 </Link>
               </li>
@@ -62,21 +60,25 @@ export default function Navbar(props) {
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" to="/">
+                <Link className="nav-link" to="/cameras">
                   Cameras
                 </Link>
               </li>
-              <li className="nav-item">
-                <Link className="nav-link" to="/">
-                  Accessories
-                </Link>
-              </li>
             </ul>
-            <Link to="/cart" className="link-dark mx-3">
+            <Link
+              to="/cart"
+              className="link-dark mx-3"
+              style={
+                !localStorage.getItem("token") || info.role !== "Buyer"
+                  ? { display: "none" }
+                  : {}
+              }
+            >
               <img
                 title="Go to Cart"
-                src="https://img.icons8.com/external-flatart-icons-solid-flatarticons/50/000000/external-cart-marketing-flatart-icons-solid-flatarticons.png"
+                src="https://www.svgrepo.com/show/80543/shopping-cart-outline.svg"
                 alt="..."
+                style={{ width: "40px" }}
               />
             </Link>
             {!localStorage.getItem("token") ? (
@@ -88,15 +90,27 @@ export default function Navbar(props) {
                 Logout
               </button>
             )}
-
-            {info.role === "seller" && (
-              <Link to="/sell" className="btn btn-primary mx-2">
+            {info.role === "Seller" && (
+              <Link
+                to="/sell"
+                className={
+                  info.approved
+                    ? "btn btn-primary mx-2"
+                    : "btn btn-primary mx-2 disabled"
+                }
+                style={{ color: "white" }}
+              >
                 Seller
               </Link>
             )}
-            {info.role === "admin" && (
+            {info.role === "Admin" && (
               <Link to="/admin" className="btn btn-primary mx-2">
                 Admin
+              </Link>
+            )}
+            {info.role === "Buyer" && (
+              <Link to="/profile" className="btn btn-success mx-2">
+                {info.name}
               </Link>
             )}
           </div>

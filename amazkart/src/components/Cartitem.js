@@ -1,19 +1,25 @@
 import React, { useState } from "react";
-
+import Axios from "axios";
 export default function Cartitem({ item, onRemove }) {
-  const [counter, setCount] = useState(item.qty);
-  const handleDec = () => {
-    if (counter) {
-      setCount(counter - 1);
-      item.qty = counter;
-      console.log(item.qty);
+  const [counter, setCount] = useState(item.quantity);
+  const handleDec = (item) => {
+    if (counter>1) {
+      setCount(counter-1);
+      Axios.post("http://localhost:3001/cart/decreaseQty",{id:item.cart_id,quantity:counter-1}).then(()=>{ 
+        console.log("Quantity increased");
+      });
+    }
+    else
+    {
+      onRemove(item);
     }
   };
-  const handleInc = () => {
-    if (counter < 5) {
-      setCount(counter + 1);
-      item.qty = counter;
-      console.log(item.qty);
+  const handleInc = (item) => {
+    if (counter < 5 && counter < item.p_quantity) {
+      setCount(counter+1);
+      Axios.post("http://localhost:3001/cart/increaseQty",{id:item.cart_id,quantity:counter+1}).then(()=>{ 
+        console.log("Quantity increased");
+      });
     }
   };
 
@@ -22,24 +28,24 @@ export default function Cartitem({ item, onRemove }) {
       {counter !== 0 && (
         <div className="card-item-container">
           <div className="pimg">
-            <img src={item.imgSrc} className="cartimg" alt="product img" />
+            <img src={item.img_url} className="cartimg" alt="product img" />
           </div>
           <div className="pdescription">
             <ul className="desc-list">
-              <li>Product : {item.productName}</li>
+              <li>Product : {item.pname}</li>
               <li>
-                <button className="btn btn-danger" onClick={handleDec}>
+                <button className="btn btn-danger" onClick={()=>{handleDec(item)}}>
                   -
                 </button>
               </li>
               <li>Qty : {counter}</li>
               <li>
-                <button className="btn btn-success" onClick={handleInc}>
+                <button className="btn btn-success" onClick={()=>{handleInc(item)}}>
                   +
                 </button>
               </li>
-              <li>Price : {item.productPrice}</li>
-              <li>Total : {item.productPrice * counter}</li>
+              <li>Price : {item.price}</li>
+              <li>Total : {item.price * counter}</li>
               <li>
                 {" "}
                 <button

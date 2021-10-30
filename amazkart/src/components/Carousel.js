@@ -1,13 +1,11 @@
 import React from "react";
-import c3 from "./c3.jpeg";
-import c1 from "./c1.jpeg";
-import c4 from "./c4.jpeg";
+
 export default function Carousel() {
   return (
     <div>
       <div
         id="carouselExampleCaptions"
-        className="carousel slide"
+        className="carousel slide my-1"
         data-bs-ride="carousel"
       >
         <div className="carousel-indicators">
@@ -34,21 +32,21 @@ export default function Carousel() {
         </div>
         <div className="carousel-inner">
           <div className="carousel-item active">
-            <img src={c1} className="d-block w-100" alt="..." />
+            <img src={"https://images.unsplash.com/photo-1526222344609-ca3e80ea3b06?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1931&q=80"} className="d-block w-100" alt="..." />
             <div className="carousel-caption d-none d-md-block">
               <h5>Smartphones</h5>
               <p>Buy best selling mobiles at lowest prices!</p>
             </div>
           </div>
           <div className="carousel-item">
-            <img src={c3} className="d-block w-100" alt="..." />
+            <img src={"https://images.unsplash.com/photo-1610465299993-e6675c9f9efa?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"} className="d-block w-100" alt="..." />
             <div className="carousel-caption d-none d-md-block">
               <h5>Laptops</h5>
               <p>Shop for professional,gaming and student laptops</p>
             </div>
           </div>
           <div className="carousel-item">
-            <img src={c4} className="d-block w-100" alt="..." />
+            <img src={"https://wallpapercave.com/wp/wp4128735.jpg"} className="d-block w-100" alt="..." />
             <div className="carousel-caption d-none d-md-block">
               <h5>Bluetooth Speakers</h5>
               <p>Shop for best selling bluetooth devices</p>
